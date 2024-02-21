@@ -261,6 +261,13 @@ class Announcer():
         for event in self.scheduler.queue:
             self.scheduler.cancel(event)
 
+def get_day_announcer(main_file, specific_files):
+    a = Announcer()
+    a.load(main_file)
+    for f in specific_files:
+        a.load(f)
+    return a
+
 def find_default_file(directory):
     for default_file in ["Timetable", "timetable", "Daily", "daily", "Default", "default"]:
         default_file = os.path.join(directory, default_file + ".csv" )
