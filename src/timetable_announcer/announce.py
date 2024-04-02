@@ -208,7 +208,7 @@ class Announcer():
         if os.path.exists(dayfile := os.path.join(timetables_directory,
                                                   day.strftime("%A")+".csv")):
             self.load(dayfile)
-        self.schedule_chimes(start_time="06:30", end_time="22:00")
+        self.schedule_chimes(start_time="06:00", end_time="22:00")
 
     def show(self):
         for slot in sorted(self.day.slots.keys()):
