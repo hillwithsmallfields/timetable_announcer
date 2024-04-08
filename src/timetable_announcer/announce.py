@@ -200,18 +200,19 @@ class Announcer():
         The slots from the file will be merged with the existing slots."""
         self.day.load(input_file, verbose)
 
-    def reload_timetables(self, timetables_directory, day):
+    def reload_timetables(self, timetables_directory, chiming_times, day):
         """Load the timetables for the given day.
         Any previous entries will be cleared out."""
         self.empty_queue()
+        day_name = day.strftime("%A")
         self.load(os.path.join(timetables_directory, "timetable.csv"))
         if os.path.exists(dayfile := os.path.join(timetables_directory,
-                                                  day.strftime("%A")+".csv")):
+                                                  day_name+".csv")):
             self.load(dayfile)
-        self.schedule_chimes((start_time="08:30" # lazy start on Saturdays
-                              if day.weekday() == 5
-                              else "06:00"),
-                             end_time="22:00")
+        chimes_start_end = chiming_times.get(day_name,
+                                             chiming_times.get('Default'))
+        self.schedule_chimes(start_time=chimes_start_end[0],
+                             end_time=chimes_start_end[1])
 
     def show(self):
         for slot in sorted(self.day.slots.keys()):
