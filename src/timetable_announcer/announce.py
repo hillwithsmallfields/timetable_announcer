@@ -140,6 +140,9 @@ class Day():
                 existing.start = slot.end
         self.slots[slot.start] = slot
 
+    def clear(self):
+        self.slots = {}
+
     def load(self, input_file, verbose=False):
         """Load a one-day timetable file.
         The file is expected to have columns ['Start', 'Duration', and 'Activity']
@@ -204,6 +207,7 @@ class Announcer():
         """Load the timetables for the given day.
         Any previous entries will be cleared out."""
         self.empty_queue()
+        self.day.clear()
         day_name = day.strftime("%A")
         self.load(os.path.join(timetables_directory, "timetable.csv"))
         if os.path.exists(dayfile := os.path.join(timetables_directory,
@@ -211,8 +215,20 @@ class Announcer():
             self.load(dayfile)
         chimes_start_end = chiming_times.get(day_name,
                                              chiming_times.get('Default'))
-        self.schedule_chimes(start_time=chimes_start_end[0],
-                             end_time=chimes_start_end[1])
+        start_time=chimes_start_end[0]
+        end_time=chimes_start_end[1]
+        if os.path.exists(datefile := os.path.join(timetables_directory, "dates.csv")):
+            datestring = day.isoformat()
+            with open(datefile) as datestream:
+                datereader = csv.DictReader(datestream)
+                for row in datereader:
+                    if row.get('Date') == datestring:
+                        if (when := row.get('Start')):
+                            start_time=as_time(when)
+                        if (when := row.get('End')):
+                            end_time=as_time(when)
+        self.schedule_chimes(start_time=start_time,
+                             end_time=end_time)
 
     def show(self):
         for slot in sorted(self.day.slots.keys()):
