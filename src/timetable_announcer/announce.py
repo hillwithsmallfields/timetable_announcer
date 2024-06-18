@@ -13,6 +13,8 @@ import time
 first_hour = 6
 last_hour = 22
 
+HOUR_CHIME_LENGTH = 25          # start this long before the hour strikes
+
 def play_sound(announcer, sound):
     os.system("ogg123 %s" % sound)
 
@@ -263,7 +265,7 @@ class Announcer():
             quarter = (minute % 60) // 15
             hour = minute // 60
             if quarter == 0:
-                self.schedule_sound(datetime.time(hour=hour),
+                self.schedule_sound(datetime.time(hour=hour-1, minute=59, second=60-HOUR_CHIME_LENGTH),
                                     os.path.join(self.chimes_dir,
                                                  "Cambridge-chimes-hour-%02d.ogg" % (hour if hour <= 12 else hour - 12)))
             else:
