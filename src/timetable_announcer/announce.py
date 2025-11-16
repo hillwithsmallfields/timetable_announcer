@@ -9,10 +9,6 @@ import os
 import sched
 import time
 
-# TODO: flexible start and end times
-first_hour = 6
-last_hour = 22
-
 HOUR_CHIME_LENGTH = 25          # start this long before the hour strikes
 
 def play_sound(announcer, sound):
@@ -192,12 +188,14 @@ class Announcer():
                  announce=None,
                  playsound=None,
                  chimes_dir="/usr/local/share/chimes",
+                 chiming_times=None,
                  scheduler=None,
                  day=None):
         self.announce_function = announce
         self.playsound_function = playsound
         self.day = day or Day()
         self.scheduler = scheduler or sched.scheduler(time.time, time.sleep)
+        self.chiming_times = chiming_times
         self.chimes_dir = chimes_dir
 
     def load(self, input_file, verbose=False):
@@ -362,6 +360,7 @@ def main(language, engine, verbose, run_tests, display, timetables):
     my_announcer.schedule_announcements()
     if display:
         my_announcer.reload_timetables(os.path.expandvars(timetables),
+                                       my_announcer.chiming_times,
                                        datetime.date.today())
         my_announcer.show()
     else:
