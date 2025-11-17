@@ -76,6 +76,7 @@ class TimeSlot():
                                           else None))
         self.activity = activity
         self.link = link
+        self.sound = sound
 
     def __repr__(self):
         return "<Activity from %s to %s doing %s>" % (self.start, self.end, self.activity)
@@ -206,6 +207,8 @@ class Announcer():
     def reload_timetables(self, timetables_directory, chiming_times, day):
         """Load the timetables for the given day.
         Any previous entries will be cleared out."""
+        print("reloading timetables for", day, "from", timetables_directory, "at", datetime.datetime.now().isoformat())
+        print("chiming times are", chiming_times)
         self.empty_queue()
         self.day.clear()
         day_name = day.strftime("%A")
@@ -256,6 +259,9 @@ class Announcer():
         start = max(datetime.time.fromisoformat(start_time),
                     datetime.datetime.now().time())
         end = datetime.time.fromisoformat(end_time)
+
+        print("schedule_chimes starting at", start_time, "which is", start)
+        print("schedule_chimes ending at", end_time, "which is", end)
 
         for minute in range(start.hour * 60 + (start.minute // 15) * 15,
                             end.hour * 60 + end.minute+1,
