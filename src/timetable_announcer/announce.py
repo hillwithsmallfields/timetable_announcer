@@ -256,9 +256,13 @@ class Announcer():
 
     def schedule_chimes(self, start_time="06:30", end_time="22:00"):
         """Add chimes to the schedule."""
-        start = max(datetime.time.fromisoformat(start_time),
+        start = max((datetime.time.fromisoformat(start_time)
+                     if isinstance(start_time, str)
+                     else datetime.time(hour=start_time//60, minute=start_time%60)),
                     datetime.datetime.now().time())
-        end = datetime.time.fromisoformat(end_time)
+        end = (datetime.time.fromisoformat(end_time)
+               if isinstance(end_time, str)
+               else datetime.time(hour=end_time//60, minute=end_time%60))
 
         print("schedule_chimes starting at", start_time, "which is", start)
         print("schedule_chimes ending at", end_time, "which is", end)
