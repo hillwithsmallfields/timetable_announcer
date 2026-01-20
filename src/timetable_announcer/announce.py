@@ -199,6 +199,9 @@ class Announcer():
         self.chiming_times = chiming_times
         self.chimes_dir = chimes_dir
 
+    def __str__(self):
+        return "<Announcer>"
+        
     def load(self, input_file, verbose=False):
         """Load one timetable file.
         The slots from the file will be merged with the existing slots."""
